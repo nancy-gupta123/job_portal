@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"errors"
+	"os"
 
 	"fmt"
 	"log"
@@ -43,7 +44,7 @@ type PostgresStore struct{
 }
 
 func NewPostgresStore()(*PostgresStore,error){
-	connstr:="postgresql://postgres:eLORsiMhFormmAIhLPTtrBXzEWOoGDGp@roundhouse.proxy.rlwy.net:53001/railway"
+	connstr:=os.Getenv("DBlink")
 
 	db,err:=sql.Open("postgres",connstr)
 	if err!=nil{
