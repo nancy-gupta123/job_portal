@@ -1,24 +1,41 @@
 on:
-    push: 
-        branches:
-            - main 
+  push:
+    branches:
+      - main
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout the code
-              uses: actions/checkout@v3
-            - name: Log in to Docker Hub
-              uses: docker/login-action@v3  
-              with: 
-                username: ${{secrets.DOCKER_USER_NAME}}
-                password: ${{secrets.DOCKER_PASSWORD}}
-            - name: Build and push Docker image
-              uses: docker/build-push-action@v5  
-              with:
-                context: .
-                push: true
-                tags: ${{secrets.DOCKER_USER_NAME}}/job_portal
-            - name: Dockerhub 
-              run: docker logout 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Debug Docker secrets
+        run: |
+          if [ -z "${{ secrets.DOCKER_USER_NAME }}" ]; then
+            echo "DOCKER_USER_NAME is NOT set"
+          else
+            echo "DOCKER_USER_NAME is set"
+          fi
+
+          if [ -z "${{ secrets.DOCKER_PASSWORD }}" ]; then
+            echo "DOCKER_PASSWORD is NOT set"
+          else
+            echo "DOCKER_PASSWORD is set"
+          fi
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER_NAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USER_NAME }}/job_portal
+
+      - name: Dockerhub logout
+        run: docker logout
