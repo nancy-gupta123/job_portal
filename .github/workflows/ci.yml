@@ -18,6 +18,6 @@ jobs:
               with:
                 context: .
                 push: true
-                tags: ${{secrets.DOCKER_USER_NAME}}/job-portal:latest
+                tags: ${{secrets.DOCKER_USER_NAME}}/job_portal:latest
             - name: Dockerhub 
               run: docker logout 
