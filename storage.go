@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -44,7 +45,18 @@ type PostgresStore struct{
 }
 
 func NewPostgresStore()(*PostgresStore,error){
-	connstr:=os.Getenv("DBlink")
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	
+	connstr := os.Getenv("DB")
+
+	// Check if the variable is set
+	if connstr == "" {
+		log.Fatal("Error: DBlink environment variable is not set")
+	}
 
 	db,err:=sql.Open("postgres",connstr)
 	if err!=nil{
